@@ -99,6 +99,8 @@ public fun delist(_: &AdminCap, list_hero: ListHero, ctx: &mut TxContext ) {
         // Destructure list_hero (ignore price with "price: _")
     // TODO:Transfer NFT back to original seller
     // TODO: Emit HeroDelisted event with listing details (Don't forget to use object::uid_to_inner(&id))
+        // Hints:
+        // Owner is the seller of the delisted nft
     // TODO:Delete the listing ID (object::delete(id))
 }
 

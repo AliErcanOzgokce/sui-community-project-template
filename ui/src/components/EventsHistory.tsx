@@ -55,6 +55,28 @@ export default function EventsHistory() {
         queryKey: ["queryEvents", packageId, "ArenaCompleted"],
         enabled: !!packageId,
       },
+      {
+        method: "queryEvents",
+        params: {
+          query: {
+            MoveEventType: `${packageId}::marketplace::HeroPriceChanged`,
+          },
+          limit: 20,
+          order: "descending",
+        },
+        queryKey: ["queryEvents", packageId, "HeroPriceChanged"],
+        enabled: !!packageId,
+      },
+      {
+        method: "queryEvents",
+        params: {
+          query: {
+            MoveEventType: `${packageId}::marketplace::HeroDelisted`,
+          },
+        },
+        queryKey: ["queryEvents", packageId, "HeroDelisted"],
+        enabled: !!packageId,
+      },
     ],
   });
 
@@ -63,7 +85,11 @@ export default function EventsHistory() {
     { data: boughtEvents, isPending: isBoughtPending },
     { data: battleCreatedEvents, isPending: isBattleCreatedPending },
     { data: battleCompletedEvents, isPending: isBattleCompletedPending },
+    { data: heroPriceChangedEvents, isPending: isHeroPriceChangedPending },
+    { data: heroDelistedEvents, isPending: isHeroDelistedPending },
   ] = eventQueries;
+  console.log("heroPriceChangedEvents", heroPriceChangedEvents);
+  console.log("heroDelistedEvents", heroDelistedEvents);
 
   const formatTimestamp = (timestamp: string) => {
     return new Date(Number(timestamp)).toLocaleString();
@@ -81,7 +107,9 @@ export default function EventsHistory() {
     isListedPending ||
     isBoughtPending ||
     isBattleCreatedPending ||
-    isBattleCompletedPending
+    isBattleCompletedPending ||
+    isHeroPriceChangedPending ||
+    isHeroDelistedPending
   ) {
     return (
       <Card>
@@ -106,6 +134,14 @@ export default function EventsHistory() {
     ...(battleCompletedEvents?.data || []).map((event) => ({
       ...event,
       type: "battle_completed" as const,
+    })),
+    ...(heroPriceChangedEvents?.data || []).map((event) => ({
+      ...event,
+      type: "hero_price_changed" as const,
+    })),
+    ...(heroDelistedEvents?.data || []).map((event) => ({
+      ...event,
+      type: "hero_delisted" as const,
     })),
   ].sort((a, b) => Number(b.timestampMs) - Number(a.timestampMs));
 
@@ -147,7 +183,11 @@ export default function EventsHistory() {
                           ? "Hero Bought"
                           : event.type === "battle_created"
                             ? "Arena Created"
-                            : "Battle Completed"}
+                            : event.type === "battle_completed"
+                              ? "Battle Completed"
+                              : event.type === "hero_price_changed"
+                                ? "Hero Price Changed"
+                                : "Hero Delisted"}
                     </Badge>
                     <Text size="3" color="gray">
                       {formatTimestamp(event.timestampMs!)}
@@ -214,6 +254,26 @@ export default function EventsHistory() {
                         <Text size="3">
                           <strong>💀 Loser:</strong> ...
                           {eventData.loser_hero_id.slice(-8)}
+                        </Text>
+                      </>
+                    )}
+                    {event.type === "hero_price_changed" && (
+                      <>
+                        <Text size="3">
+                          <strong>💰 Price Changed:</strong>{" "}
+                          {formatPrice(eventData.new_price)} SUI
+                          {"\u00A0\u00A0\u00A0"}
+                          <strong>Old Price:</strong>{" "}
+                          {formatPrice(eventData.old_price)} SUI
+                        </Text>
+                      </>
+                    )}
+
+                    {event.type === "hero_delisted" && (
+                      <>
+                        <Text size="3">
+                          <strong>��️ Delisted by admin, returned to:</strong>{" "}
+                          {formatAddress(eventData.owner)}
                         </Text>
                       </>
                     )}
