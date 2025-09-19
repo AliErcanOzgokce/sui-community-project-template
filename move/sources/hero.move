@@ -20,7 +20,7 @@ public struct HeroMetadata has key, store {
 #[allow(lint(self_transfer))]
 public fun create_hero(name: String, image_url: String, power: u64, ctx: &mut TxContext) {
     
-    // TODO: Create a new Hero struct with the given parameters
+    // TODO: Create a new Hero object with the given parameters
         // Hints:
         // Use object::new(ctx) to create a unique ID
         // Set name, image_url, and power fields

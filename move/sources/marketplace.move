@@ -41,6 +41,21 @@ public struct HeroBought has copy, drop {
     timestamp: u64,
 }
 
+public struct HeroDelisted has copy, drop {
+    list_hero_id: ID,
+    admin: address,
+    timestamp: u64,
+}
+
+public struct HeroPriceChanged has copy, drop {
+    list_hero_id: ID,
+    old_price: u64,
+    new_price: u64,
+    admin: address,
+    timestamp: u64,
+}
+
+
 // ========= FUNCTIONS =========
 
 fun init(ctx: &mut TxContext) {
@@ -84,6 +99,7 @@ public fun delist(_: &AdminCap, list_hero: ListHero) {
         // Hints:
         // Destructure list_hero (ignore price with "price: _")
     // TODO:Transfer NFT back to original seller
+    // TODO: Emit HeroDelisted event with listing details (Don't forget to use object::uid_to_inner(&id))
     // TODO:Delete the listing ID (object::delete(id))
 }
 
@@ -94,6 +110,7 @@ public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u
     // TODO: Update the listing price
         // Hints:
         // Access the price field of list_hero and update it
+    // TODO: Emit HeroPriceChanged event with listing details (Don't forget to use object::id(&list_hero) )
 }
 
 // ========= GETTER FUNCTIONS =========
