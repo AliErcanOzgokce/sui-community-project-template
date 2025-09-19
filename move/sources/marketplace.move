@@ -49,7 +49,6 @@ public struct HeroDelisted has copy, drop {
 
 public struct HeroPriceChanged has copy, drop {
     list_hero_id: ID,
-    old_price: u64,
     new_price: u64,
     timestamp: u64,
 }
@@ -107,18 +106,13 @@ public fun delist(_: &AdminCap, list_hero: ListHero, ctx: &mut TxContext ) {
 public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64, ctx: &mut TxContext) {
     
     // NOTE: The AdminCap parameter ensures only admin can call this
-    // NOTE: If we update list_hero.price first and then use list_hero.price as old_price in the event, 
-    //       the old_price will actually be the new price. Therefore, we need to capture the old price 
-    //       in a variable before updating the price field.
     // NOTE: list_hero has &mut so price can be modified 
-    // TODO: Get the old price from the list_hero.price and assign it to a variable and then use it in the event
     // TODO: Update the listing price
         // Hints:
         // Access the price field of list_hero and update it
     // TODO: Emit HeroPriceChanged event with listing details
         // Hints: 
         // Access the id field of list_hero and get the id with object::uid_to_inner(&list_hero.id)
-        // Use the old_price variable in the event
 }
 
 // ========= GETTER FUNCTIONS =========
