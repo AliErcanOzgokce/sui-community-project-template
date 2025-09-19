@@ -43,7 +43,7 @@ public struct HeroBought has copy, drop {
 
 public struct HeroDelisted has copy, drop {
     list_hero_id: ID,
-    admin: address,
+    owner: address,
     timestamp: u64,
 }
 
@@ -51,7 +51,6 @@ public struct HeroPriceChanged has copy, drop {
     list_hero_id: ID,
     old_price: u64,
     new_price: u64,
-    admin: address,
     timestamp: u64,
 }
 
@@ -92,7 +91,7 @@ public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
 
 // ========= ADMIN FUNCTIONS =========
 
-public fun delist(_: &AdminCap, list_hero: ListHero) {
+public fun delist(_: &AdminCap, list_hero: ListHero, ctx: &mut TxContext ) {
 
     // NOTE: The AdminCap parameter ensures only admin can call this
     // TODO: Implement admin delist functionality
@@ -103,14 +102,17 @@ public fun delist(_: &AdminCap, list_hero: ListHero) {
     // TODO:Delete the listing ID (object::delete(id))
 }
 
-public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64) {
+public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64, ctx: &mut TxContext) {
     
     // NOTE: The AdminCap parameter ensures only admin can call this
     // list_hero has &mut so price can be modified     
     // TODO: Update the listing price
         // Hints:
         // Access the price field of list_hero and update it
-    // TODO: Emit HeroPriceChanged event with listing details (Don't forget to use object::id(&list_hero) )
+    // TODO: Emit HeroPriceChanged event with listing details
+        // Hints: 
+        // Access the id field of list_hero and get the if with object::uid_to_inner(&list_hero.id)
+        // Access the old_price from list_hero too
 }
 
 // ========= GETTER FUNCTIONS =========
