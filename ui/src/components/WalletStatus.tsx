@@ -8,6 +8,7 @@ import { Flex, Text, Card, Badge, Button, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { useNetworkVariable } from "../networkConfig";
 import { transferAdminCap } from "../utility/helpers/transfer_admin_cap";
+import { validateSuiAddress } from "../utility/helpers/address_validation";
 
 export function WalletStatus() {
   const account = useCurrentAccount();
@@ -15,7 +16,7 @@ export function WalletStatus() {
   const suiClient = useSuiClient();
   const [transferAdminAddress, setTransferAdminAddress] = useState("");
   const [isTransferringAdmin, setIsTransferringAdmin] = useState(false);
-  const [addressError, setAddressError] = useState(""); // Add error state
+  const [addressError, setAddressError] = useState("");
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
   const { data: balance } = useSuiClientQuery(
@@ -50,22 +51,16 @@ export function WalletStatus() {
   const adminCapId = adminCap?.data?.[0]?.data?.objectId;
 
   const handleTransferAdmin = () => {
-    // Validate address format - must start with 0x and be 66 characters long
-    const addressRegex = /^0x[a-fA-F0-9]{64}$/;
+    const validation = validateSuiAddress(transferAdminAddress);
 
-    if (!transferAdminAddress.trim()) {
-      setAddressError("Please enter an address");
-      return;
-    }
-
-    if (!addressRegex.test(transferAdminAddress)) {
-      setAddressError("Please enter a valid Sui address (0x...)");
+    if (!validation.isValid) {
+      setAddressError(validation.error);
       return;
     }
 
     if (!isAdmin || !adminCapId) return;
 
-    setAddressError(""); // Clear any previous errors
+    setAddressError("");
     setIsTransferringAdmin(true);
 
     const tx = transferAdminCap(adminCapId, transferAdminAddress);
@@ -81,7 +76,7 @@ export function WalletStatus() {
           });
           setIsTransferringAdmin(false);
           setTransferAdminAddress("");
-          setAddressError(""); // Clear error on success
+          setAddressError("");
         },
         onError: () => {
           setIsTransferringAdmin(false);
@@ -137,7 +132,7 @@ export function WalletStatus() {
 
             <Flex direction="column" gap="2">
               <TextField.Root
-                placeholder="Enter recipient address (0x...)"
+                placeholder="Enter admin address (0x...)"
                 value={transferAdminAddress}
                 onChange={(e) => {
                   setTransferAdminAddress(e.target.value);

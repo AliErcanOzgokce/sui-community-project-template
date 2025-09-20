@@ -88,8 +88,6 @@ export default function EventsHistory() {
     { data: heroPriceChangedEvents, isPending: isHeroPriceChangedPending },
     { data: heroDelistedEvents, isPending: isHeroDelistedPending },
   ] = eventQueries;
-  console.log("heroPriceChangedEvents", heroPriceChangedEvents);
-  console.log("heroDelistedEvents", heroDelistedEvents);
 
   const formatTimestamp = (timestamp: string) => {
     return new Date(Number(timestamp)).toLocaleString();
@@ -260,11 +258,8 @@ export default function EventsHistory() {
                     {event.type === "hero_price_changed" && (
                       <>
                         <Text size="3">
-                          <strong>💰 Price Changed:</strong>{" "}
+                          <strong>💰 Price Changed To:</strong>{" "}
                           {formatPrice(eventData.new_price)} SUI
-                          {"\u00A0\u00A0\u00A0"}
-                          <strong>Old Price:</strong>{" "}
-                          {formatPrice(eventData.old_price)} SUI
                         </Text>
                       </>
                     )}
@@ -272,7 +267,7 @@ export default function EventsHistory() {
                     {event.type === "hero_delisted" && (
                       <>
                         <Text size="3">
-                          <strong>��️ Delisted by admin, returned to:</strong>{" "}
+                          <strong>❌ Delisted By Admin, Returned To:</strong>{" "}
                           {formatAddress(eventData.owner)}
                         </Text>
                       </>
