@@ -8,7 +8,7 @@ import { Flex, Text, Card, Badge, Button, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { useNetworkVariable } from "../networkConfig";
 import { transferAdminCap } from "../utility/helpers/transfer_admin_cap";
-import { validateSuiAddress } from "../utility/helpers/address_validation";
+import { validateSuiAddress } from "../helpers/address_validation";
 
 export function WalletStatus() {
   const account = useCurrentAccount();
