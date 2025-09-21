@@ -319,7 +319,7 @@ fun test_delist_hero() {
         let admin_cap = ts::take_from_sender<AdminCap>(&scenario);
         let list_hero = ts::take_shared<ListHero>(&scenario);
 
-        marketplace::delist(&admin_cap, list_hero);
+        marketplace::delist(&admin_cap, list_hero, scenario.ctx(),);
 
         ts::return_to_sender(&scenario, admin_cap);
     };
@@ -374,7 +374,7 @@ fun test_change_the_price() {
         let admin_cap = ts::take_from_sender<AdminCap>(&scenario);
         let mut list_hero = ts::take_shared<ListHero>(&scenario);
 
-        marketplace::change_the_price(&admin_cap, &mut list_hero, new_price);
+        marketplace::change_the_price(&admin_cap, &mut list_hero, new_price,scenario.ctx(),);
 
         ts::return_shared(list_hero);
         ts::return_to_sender(&scenario, admin_cap);

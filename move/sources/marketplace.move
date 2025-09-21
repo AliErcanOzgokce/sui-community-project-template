@@ -41,6 +41,19 @@ public struct HeroBought has copy, drop {
     timestamp: u64,
 }
 
+public struct HeroDelisted has copy, drop {
+    list_hero_id: ID,
+    owner: address,
+    timestamp: u64,
+}
+
+public struct HeroPriceChanged has copy, drop {
+    list_hero_id: ID,
+    new_price: u64,
+    timestamp: u64,
+}
+
+
 // ========= FUNCTIONS =========
 
 fun init(ctx: &mut TxContext) {
@@ -77,23 +90,29 @@ public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
 
 // ========= ADMIN FUNCTIONS =========
 
-public fun delist(_: &AdminCap, list_hero: ListHero) {
+public fun delist(_: &AdminCap, list_hero: ListHero, ctx: &mut TxContext ) {
 
     // NOTE: The AdminCap parameter ensures only admin can call this
     // TODO: Implement admin delist functionality
         // Hints:
         // Destructure list_hero (ignore price with "price: _")
     // TODO:Transfer NFT back to original seller
+    // TODO: Emit HeroDelisted event with listing details (Don't forget to use object::uid_to_inner(&id))
+        // Hints:
+        // Owner is the seller of the delisted nft
     // TODO:Delete the listing ID (object::delete(id))
 }
 
-public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64) {
+public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64, ctx: &mut TxContext) {
     
     // NOTE: The AdminCap parameter ensures only admin can call this
-    // list_hero has &mut so price can be modified     
+    // NOTE: list_hero has &mut so price can be modified 
     // TODO: Update the listing price
         // Hints:
         // Access the price field of list_hero and update it
+    // TODO: Emit HeroPriceChanged event with listing details
+        // Hints: 
+        // Access the id field of list_hero and get the id with object::uid_to_inner(&list_hero.id)
 }
 
 // ========= GETTER FUNCTIONS =========
